@@ -1,3 +1,5 @@
+#include <Adafruit_MLX90614.h>
+
 #include <Redis.h>
 
 #define WIFI_SSID "Thanh ne"
@@ -10,6 +12,7 @@
 Redis redis(REDIS_ADDR, REDIS_PORT);
 char* messageNumber = "10000000000000000000000000000";
 int counter = 0;
+Adafruit_MLX90614 mlx = Adafruit_MLX90614();
 
 void setup()
 {
@@ -38,6 +41,8 @@ void setup()
         return;
     }
 
+    Serial.println("Adafruit MLX90614 test");
+    mlx.begin();
 
 
 //    redis.close();
@@ -48,11 +53,21 @@ void loop()
 {
     counter++;
     char cstr[16];
+    char mid[3] = ", ";
+    String sepa = "Try 1: ";
+    sepa.concat(mlx.readAmbientTempC());
+    sepa.concat(mid);
+    sepa.concat(mlx.readObjectTempC());
+    char object[100];
+    sepa.toCharArray(object, 100);
+//    char ambitent[9];
+//    dtostrf(mlx.readAmbientTempC(), 9, 4, ambitent);
+//    dtostrf(mlx.readObjectTempC(), 9, 4, object);
     itoa(counter, cstr, 10);
     strcpy(messageNumber, cstr);
     delay(2000);
     Serial.print("\nMessage Number: ");
     Serial.print(messageNumber);
     Serial.print("; SentStatus: ");
-    Serial.print(redis.publish("test", messageNumber));
+    Serial.print(redis.publish("test", object));
 }
