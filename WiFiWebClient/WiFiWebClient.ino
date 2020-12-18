@@ -2,7 +2,7 @@
 
 #include <Redis.h>
 
-#define WIFI_SSID "Thanh ne"
+#define WIFI_SSID "thanhne"
 #define WIFI_PASSWORD "thanha@a"
 
 #define REDIS_ADDR "redis-10104.c239.us-east-1-2.ec2.cloud.redislabs.com"
@@ -19,6 +19,7 @@ void setup()
     Serial.begin(115200);
     Serial.println();
 
+    mlx.begin();
     WiFi.mode(WIFI_STA);
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
     Serial.print("Connecting to the WiFi");
@@ -42,7 +43,6 @@ void setup()
     }
 
     Serial.println("Adafruit MLX90614 test");
-    mlx.begin();
 
 
 //    redis.close();
@@ -53,8 +53,8 @@ void loop()
 {
     counter++;
     char cstr[16];
-    char mid[3] = ", ";
-    String sepa = "Try 1: ";
+    char mid[3] = ",";
+    String sepa = "";
     sepa.concat(mlx.readAmbientTempC());
     sepa.concat(mid);
     sepa.concat(mlx.readObjectTempC());
@@ -65,9 +65,9 @@ void loop()
 //    dtostrf(mlx.readObjectTempC(), 9, 4, object);
     itoa(counter, cstr, 10);
     strcpy(messageNumber, cstr);
-    delay(2000);
     Serial.print("\nMessage Number: ");
-    Serial.print(messageNumber);
+    Serial.print(object);
     Serial.print("; SentStatus: ");
     Serial.print(redis.publish("test", object));
+    delay(1000);
 }
